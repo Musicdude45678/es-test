@@ -1,0 +1,17 @@
+{
+  "name": "reps-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Reps dashboard + backup server: receives workout snapshots from the Android app, keeps rolling backups, and shows progress behind Pocket ID login.",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "jose": "^6.0.0",
+    "qrcode": "^1.5.4"
+  }
+}
