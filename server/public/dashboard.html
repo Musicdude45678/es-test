@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reps</title>
+<link rel="stylesheet" href="/assets/styles.css">
+<link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+</head>
+<body>
+<header class="top">
+  <div class="inner">
+    <div class="logo"><img src="/assets/icon.svg" alt="" width="30" height="30"> Reps</div>
+    <span id="syncBadge" class="badge">loading…</span>
+    <div class="spacer"></div>
+    <button class="btn-sm" id="connectBtn">Connect phone</button>
+    <span class="muted small" id="userName"></span>
+    <a class="btn btn-ghost btn-sm" href="/auth/logout">Sign out</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <h1 id="greeting">Hello</h1>
+      <div class="muted" id="subtitle">Loading your training log…</div>
+    </div>
+  </section>
+
+  <section id="empty" class="card" style="display:none">
+    <div class="empty">
+      <h3>No workouts backed up yet</h3>
+      <p>Connect the Reps app on your phone and finish a workout. It shows up here within seconds.</p>
+      <p style="margin-top:14px"><button class="btn-primary" onclick="openConnect()">Connect phone</button></p>
+    </div>
+  </section>
+
+  <section id="content" style="display:none">
+    <div class="tiles" id="tiles"></div>
+
+    <div class="grid" style="margin-top:18px">
+      <div class="card col-7">
+        <h2>Weekly volume <span class="value" id="weekVolume"></span></h2>
+        <div id="volumeChart"></div>
+      </div>
+      <div class="card col-5">
+        <h2>Training days <span class="value" id="heatSummary"></span></h2>
+        <div class="heat" id="heat"></div>
+        <div class="chart-labels"><span id="heatStart"></span><span>today</span></div>
+      </div>
+    </div>
+
+    <div class="grid" style="margin-top:18px">
+      <div class="card col-7">
+        <h2>Recent workouts <span class="value" id="workoutCount"></span></h2>
+        <div class="list" id="workouts"></div>
+        <p style="margin-top:12px"><button class="btn-sm" id="moreWorkouts">Show more</button></p>
+      </div>
+      <div class="card col-5">
+        <h2>Personal records</h2>
+        <div id="prs"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <h2>Exercise progress</h2>
+      <div class="toolbar">
+        <select id="exerciseSelect"></select>
+        <div class="seg" id="metricSeg">
+          <button data-m="top" class="on">Top weight</button>
+          <button data-m="orm">Est. 1RM</button>
+          <button data-m="vol">Volume</button>
+        </div>
+        <span class="muted small" id="exerciseMeta"></span>
+      </div>
+      <div id="exerciseChart"></div>
+      <div id="exerciseSessions" style="margin-top:14px"></div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <h2>Backups <span class="value" id="backupCount"></span></h2>
+      <p class="muted small" style="margin-bottom:12px">Every change on the phone is pushed here. Older copies are thinned out automatically: everything from the last two days, then one per day for two months, one per week for a year, one per month after that. To restore on a new phone: open Reps → Settings → Dashboard &amp; backup → Restore.</p>
+      <div id="backups"></div>
+    </div>
+  </section>
+</main>
+
+<dialog id="connectDialog">
+  <h3 style="font-size:18px;margin-bottom:6px">Connect your phone</h3>
+  <p class="muted small">Install Reps, then either scan this code with your phone camera or open this page on the phone and tap the button.</p>
+  <div class="qr" id="qr"></div>
+  <a class="btn btn-primary" id="connectLink" href="#" style="width:100%;justify-content:center">Open in Reps on this phone</a>
+  <p class="muted small" style="margin-top:14px">Or type these into Reps → Settings → Dashboard &amp; backup:</p>
+  <div class="field"><code id="connectUrl"></code><button class="btn-sm" data-copy="connectUrl">Copy</button></div>
+  <div class="field"><code id="connectToken"></code><button class="btn-sm" data-copy="connectToken">Copy</button></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px">
+    <button class="btn-ghost btn-sm" id="rotateToken">New token</button>
+    <button class="btn-sm" onclick="document.getElementById('connectDialog').close()">Close</button>
+  </div>
+</dialog>
+
+<div class="toast" id="toast"></div>
+<footer>Reps · private dashboard</footer>
+<script src="/assets/app.js"></script>
+</body>
+</html>

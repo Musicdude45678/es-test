@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reps · Setup</title>
+<link rel="stylesheet" href="/assets/styles.css">
+<link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+</head>
+<body class="center">
+<main class="card narrow" style="max-width:560px;text-align:left">
+  <div class="logo"><img src="/assets/icon.svg" alt="" width="30" height="30"> Reps · setup</div>
+  <p class="muted" style="margin:10px 0 18px">The server is running and the phone API works, but Pocket ID sign-in is not configured yet, so the dashboard is locked.</p>
+  <div id="status" class="muted small" style="margin-bottom:16px">Checking…</div>
+  <ol class="steps">
+    <li><div>In <b>Pocket ID</b> create an OIDC client named <b>Reps</b>. Callback URL: <code id="cb" class="mono"></code></div></li>
+    <li><div>In <b>Coolify</b> set the environment variables <code>OIDC_ISSUER</code> (your Pocket ID URL), <code>OIDC_CLIENT_ID</code>, <code>OIDC_CLIENT_SECRET</code> and a random <code>SESSION_SECRET</code>, then redeploy.</div></li>
+    <li><div>Reload this page and sign in. The first account to sign in becomes the owner.</div></li>
+  </ol>
+</main>
+<script>
+fetch('/setup-status').then(r => r.json()).then(s => {
+  document.getElementById('cb').textContent = s.redirectUri;
+  const el = document.getElementById('status');
+  el.innerHTML = (s.error ? `<span class="badge warn">OIDC error</span> ${s.error}` : `<span class="badge warn">not configured</span> issuer: ${s.issuer || 'missing'}`) +
+    (s.ephemeralSessionSecret ? ' · <span class="badge warn">SESSION_SECRET missing</span>' : '');
+}).catch(() => {});
+</script>
+</body>
+</html>
