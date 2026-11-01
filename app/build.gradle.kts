@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.screenshot)
 }
 
 /**
@@ -48,8 +49,8 @@ android {
         applicationId = "com.reps.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 2
+        versionName = "1.0.1"
         vectorDrawables { useSupportLibrary = true }
     }
 
@@ -85,6 +86,8 @@ android {
 
     buildFeatures { compose = true }
 
+    experimentalProperties["android.experimental.enableScreenshotTest"] = true
+
     packaging {
         resources.excludes += setOf("META-INF/AL2.0", "META-INF/LGPL2.1", "DebugProbesKt.bin")
     }
@@ -117,4 +120,5 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit)
     debugImplementation(libs.androidx.compose.ui.tooling)
+    screenshotTestImplementation(libs.androidx.compose.ui.tooling)
 }

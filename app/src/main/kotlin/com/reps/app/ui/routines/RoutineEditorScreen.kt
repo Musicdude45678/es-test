@@ -42,6 +42,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -145,8 +146,8 @@ fun RoutineEditorScreen(routineId: String?, onBack: () -> Unit) {
                         Text("${index + 1}", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Spacer(Modifier.width(14.dp))
                         Column(Modifier.weight(1f)) {
-                            Text(ex.name, style = MaterialTheme.typography.titleMedium, maxLines = 1)
-                            Text("${ex.equipment.label} · ${ex.muscleGroup.label}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(ex.name, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text("${ex.equipment.label} · ${ex.muscleGroup.label}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                         }
                         IconButton(onClick = { vm.move(index, index - 1) }, enabled = index > 0) { Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Move up") }
                         IconButton(onClick = { vm.move(index, index + 1) }, enabled = index < state.exercises.size - 1) { Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Move down") }

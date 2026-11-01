@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.reps.app.data.model.WeightUnit
@@ -59,13 +60,15 @@ fun PlateBreakdown(totalKg: Double, barKg: Double, unit: WeightUnit, modifier: M
             label,
             style = if (compact) MaterialTheme.typography.labelSmall else MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            maxLines = 1
+            maxLines = if (compact) 2 else 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f, fill = false)
         )
         if (!compact && plates.isNotEmpty()) {
             Spacer(Modifier.width(10.dp))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                 Box(Modifier.width(10.dp).height(5.dp).background(MaterialTheme.colorScheme.onSurfaceVariant))
-                plates.forEach { p ->
+                plates.take(MAX_DRAWN_PLATES).forEach { p ->
                     Box(
                         Modifier
                             .width(if (p >= 10) 9.dp else 6.dp)
@@ -75,10 +78,15 @@ fun PlateBreakdown(totalKg: Double, barKg: Double, unit: WeightUnit, modifier: M
                         contentAlignment = Alignment.Center
                     ) {}
                 }
+                if (plates.size > MAX_DRAWN_PLATES) {
+                    Text(" +${plates.size - MAX_DRAWN_PLATES}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
             }
         }
     }
 }
+
+private const val MAX_DRAWN_PLATES = 8
 
 @Composable
 fun PlateLegend(plate: Double, unit: WeightUnit) {

@@ -49,12 +49,10 @@ object Calc {
         else String.format(Locale.US, "%.2f", rounded).trimEnd('0').trimEnd('.')
     }
 
-    fun formatVolume(kg: Double, unit: WeightUnit): String {
+    fun formatVolume(kg: Double, unit: WeightUnit, withUnit: Boolean = true): String {
         val v = unit.fromKg(kg)
-        return when {
-            v >= 10_000 -> String.format(Locale.US, "%.1fk %s", v / 1000.0, unit.label)
-            else -> "${v.roundToInt()} ${unit.label}"
-        }
+        val number = if (v >= 10_000) String.format(Locale.US, "%.1fk", v / 1000.0) else v.roundToInt().toString()
+        return if (withUnit) "$number ${unit.label}" else number
     }
 
     fun formatDuration(millis: Long): String {

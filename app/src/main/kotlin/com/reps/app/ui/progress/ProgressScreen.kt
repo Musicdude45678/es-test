@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -35,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.reps.app.domain.Calc
@@ -81,10 +83,10 @@ fun ProgressScreen(nav: NavHostController, onOpenExercise: (String) -> Unit, onC
             }
 
             item {
-                Row(Modifier.padding(horizontal = 20.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    StatTile("Workouts", state.totalWorkouts.toString(), Modifier.weight(1f))
-                    StatTile("Sets", state.totalSets.toString(), Modifier.weight(1f))
-                    StatTile("Lifted", Calc.formatVolume(state.totalVolumeKg, unit), Modifier.weight(1f))
+                Row(Modifier.padding(horizontal = 20.dp).height(androidx.compose.foundation.layout.IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    StatTile("Workouts", state.totalWorkouts.toString(), Modifier.weight(1f).fillMaxHeight())
+                    StatTile("Sets", state.totalSets.toString(), Modifier.weight(1f).fillMaxHeight())
+                    StatTile("Lifted", Calc.formatVolume(state.totalVolumeKg, unit, withUnit = false), Modifier.weight(1f).fillMaxHeight(), sub = unit.label)
                 }
             }
 
@@ -98,7 +100,7 @@ fun ProgressScreen(nav: NavHostController, onOpenExercise: (String) -> Unit, onC
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text("Weekly volume", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
                             val thisWeek = state.weeks.lastOrNull()?.volumeKg ?: 0.0
-                            Text(Calc.formatVolume(thisWeek, unit), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+                            Text(Calc.formatVolume(thisWeek, unit), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary, maxLines = 1, softWrap = false)
                         }
                         Spacer(Modifier.height(14.dp))
                         BarChart(
@@ -130,10 +132,10 @@ fun ProgressScreen(nav: NavHostController, onOpenExercise: (String) -> Unit, onC
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Column(Modifier.weight(1f)) {
-                                        Text(pr.exercise.name, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+                                        Text(pr.exercise.name, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium, maxLines = 2, overflow = TextOverflow.Ellipsis)
                                         Text(Dates.relativeDay(pr.at), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                     }
-                                    Text("${Calc.formatWeight(pr.weightKg, unit)} × ${pr.reps}", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.tertiary)
+                                    Text("${Calc.formatWeight(pr.weightKg, unit)} × ${pr.reps}", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.tertiary, maxLines = 1, softWrap = false, modifier = Modifier.padding(start = 8.dp))
                                 }
                             }
                         }
@@ -163,12 +165,12 @@ fun ProgressScreen(nav: NavHostController, onOpenExercise: (String) -> Unit, onC
                 ) {
                     Row(Modifier.padding(horizontal = 18.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
                         Column(Modifier.weight(1f)) {
-                            Text(s.exercise.name, style = MaterialTheme.typography.titleMedium, maxLines = 1)
+                            Text(s.exercise.name, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                             Text(
                                 "Best ${Calc.formatWeight(s.bestWeightKg, unit)} · ${s.sessions} session${if (s.sessions == 1) "" else "s"} · ${Dates.relativeDay(s.lastPerformed)}",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 1
+                                maxLines = 1, overflow = TextOverflow.Ellipsis
                             )
                         }
                         Spacer(Modifier.width(12.dp))

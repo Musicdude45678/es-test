@@ -26,7 +26,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
+/**
+ * Deterministic font size for a short numeric value in a narrow slot: shrinks with length so it
+ * never wraps or clips (the caller still sets softWrap = false, maxLines = 1, overflow = TextOverflow.Ellipsis).
+ */
+fun fittedSize(text: String, max: TextUnit, min: TextUnit = 14.sp): TextUnit {
+    val n = text.length
+    val factor = when {
+        n <= 3 -> 1f
+        n <= 5 -> 0.85f
+        n <= 7 -> 0.72f
+        n <= 9 -> 0.62f
+        else -> 0.54f
+    }
+    return (max.value * factor).coerceAtLeast(min.value).sp
+}
 
 @Composable
 fun SectionHeader(title: String, modifier: Modifier = Modifier, action: (@Composable () -> Unit)? = null) {
@@ -46,17 +65,19 @@ fun StatTile(label: String, value: String, modifier: Modifier = Modifier, sub: S
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
     ) {
-        Column(Modifier.padding(horizontal = 14.dp, vertical = 12.dp)) {
-            Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Spacer(Modifier.height(4.dp))
+        Column(Modifier.padding(horizontal = 12.dp, vertical = 10.dp)) {
+            Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Spacer(Modifier.height(2.dp))
             Text(
                 value,
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.titleLarge,
+                fontSize = fittedSize(value, 22.sp),
                 color = accent ?: MaterialTheme.colorScheme.onSurface,
-                maxLines = 1
+                maxLines = 1, overflow = TextOverflow.Visible,
+                softWrap = false
             )
             if (sub != null) {
-                Text(sub, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
+                Text(sub, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
     }

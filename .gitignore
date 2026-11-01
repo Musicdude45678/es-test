@@ -20,3 +20,6 @@
 /gradle/wrapper/gradle-wrapper.jar
 /server/package-lock.json
 /app/schemas/
+
+# generated screenshot reference images
+/app/src/screenshotTestDebug/

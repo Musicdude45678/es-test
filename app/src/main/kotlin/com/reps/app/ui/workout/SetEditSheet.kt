@@ -73,7 +73,7 @@ fun SetEditSheet(
                     },
                     onIncrement = { weightKg = unit.toKg(Calc.snap(unit.fromKg(weightKg) + settings.weightIncrement, settings.weightIncrement)) },
                     onTapValue = { editing = "weight" },
-                    modifier = Modifier.weight(1.3f),
+                    modifier = Modifier.weight(1.25f),
                     decrementEnabled = weightKg > (barKg ?: 0.0) + 0.0001
                 )
                 Stepper(

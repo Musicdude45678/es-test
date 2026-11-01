@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.style.TextOverflow
 
 /**
  * A large, glove-friendly stepper: minus / value / plus. Tapping the value opens a number pad.
@@ -43,15 +44,17 @@ fun Stepper(
 ) {
     Column(modifier) {
         Text(
-            label.uppercase(),
+            (if (unit != null) "$label · $unit" else label).uppercase(),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(start = 4.dp, bottom = 6.dp)
         )
         Row(
             Modifier
                 .fillMaxWidth()
-                .height(64.dp)
+                .height(60.dp)
                 .clip(RoundedCornerShape(18.dp))
                 .background(MaterialTheme.colorScheme.surfaceContainerHigh),
             verticalAlignment = Alignment.CenterVertically
@@ -61,24 +64,15 @@ fun Stepper(
                 Modifier.weight(1f).fillMaxHeight().clickable(onClick = onTapValue),
                 contentAlignment = Alignment.Center
             ) {
-                Row(verticalAlignment = Alignment.Bottom) {
-                    Text(
-                        value,
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = (-0.5).sp,
-                        textAlign = TextAlign.Center,
-                        maxLines = 1
-                    )
-                    if (unit != null) {
-                        Text(
-                            " $unit",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(bottom = 5.dp)
-                        )
-                    }
-                }
+                Text(
+                    value,
+                    fontSize = fittedSize(value, 26.sp, min = 15.sp),
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = (-0.5).sp,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1, overflow = TextOverflow.Visible,
+                    softWrap = false
+                )
             }
             StepButton(Icons.Default.Add, enabled = true, onClick = onIncrement)
         }
@@ -88,7 +82,7 @@ fun Stepper(
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(start = 4.dp, top = 6.dp),
-                maxLines = 1
+                maxLines = 1, overflow = TextOverflow.Ellipsis
             )
         }
     }
@@ -98,7 +92,7 @@ fun Stepper(
 private fun StepButton(icon: androidx.compose.ui.graphics.vector.ImageVector, enabled: Boolean, onClick: () -> Unit) {
     Box(
         Modifier
-            .width(56.dp)
+            .width(44.dp)
             .fillMaxHeight()
             .clickable(enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center
