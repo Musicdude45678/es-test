@@ -46,7 +46,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.reps.app.ui.components.fittedSize
 import androidx.navigation.NavHostController
 import com.reps.app.data.db.RoutineWithExercises
 import com.reps.app.data.db.WorkoutSummary
@@ -209,7 +212,7 @@ private fun ActiveWorkoutCard(name: String, startedAt: Long, sets: Int, exercise
         Row(Modifier.padding(horizontal = 20.dp, vertical = 16.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text("IN PROGRESS", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f))
-                Text(name, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onPrimary)
+                Text(name, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onPrimary, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 Text(
                     "${Calc.formatDuration(now - startedAt)} · $exercises exercises · $sets sets",
                     style = MaterialTheme.typography.bodyMedium,
@@ -225,7 +228,7 @@ private fun ActiveWorkoutCard(name: String, startedAt: Long, sets: Int, exercise
 }
 
 @Composable
-private fun WeekCard(state: HomeUiState) {
+internal fun WeekCard(state: HomeUiState) {
     Card(
         Modifier.fillMaxWidth().padding(horizontal = 20.dp),
         shape = RoundedCornerShape(20.dp),
@@ -279,7 +282,7 @@ private fun WeekCard(state: HomeUiState) {
             Row {
                 MiniStat("Workouts", state.weekWorkouts.toString(), Modifier.weight(1f))
                 MiniStat("Sets", state.weekSets.toString(), Modifier.weight(1f))
-                MiniStat("Volume", Calc.formatVolume(state.weekVolumeKg, state.settings.unit), Modifier.weight(1f))
+                MiniStat("Volume (${state.settings.unit.label})", Calc.formatVolume(state.weekVolumeKg, state.settings.unit, withUnit = false), Modifier.weight(1f))
             }
         }
     }
@@ -288,8 +291,8 @@ private fun WeekCard(state: HomeUiState) {
 @Composable
 private fun MiniStat(label: String, value: String, modifier: Modifier) {
     Column(modifier) {
-        Text(value, style = MaterialTheme.typography.titleLarge)
-        Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(value, style = MaterialTheme.typography.titleLarge, fontSize = fittedSize(value, 22.sp), maxLines = 1, overflow = TextOverflow.Visible, softWrap = false)
+        Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }
 
@@ -303,13 +306,13 @@ private fun RoutineRow(routine: RoutineWithExercises, enabled: Boolean, onStart:
     ) {
         Row(Modifier.padding(start = 18.dp, end = 6.dp, top = 10.dp, bottom = 10.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text(routine.routine.name, style = MaterialTheme.typography.titleMedium, maxLines = 1)
+                Text(routine.routine.name, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 val names = routine.sortedExercises.map { it.exercise.name }
                 Text(
                     names.take(3).joinToString(", ") + if (names.size > 3) " +${names.size - 3}" else "",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1
+                    maxLines = 1, overflow = TextOverflow.Ellipsis
                 )
             }
             FilledTonalButton(onClick = onStart, enabled = enabled, shape = RoundedCornerShape(12.dp)) { Text("Start") }
@@ -334,7 +337,7 @@ fun WorkoutRow(workout: WorkoutSummary, unit: WeightUnit, onClick: () -> Unit, t
         Row(Modifier.padding(start = 18.dp, end = 8.dp, top = 12.dp, bottom = 12.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(workout.name, style = MaterialTheme.typography.titleMedium, maxLines = 1, modifier = Modifier.weight(1f, fill = false))
+                    Text(workout.name, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
                     Spacer(Modifier.size(8.dp))
                     Text(Dates.relativeDay(workout.startedAt), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
@@ -344,7 +347,7 @@ fun WorkoutRow(workout: WorkoutSummary, unit: WeightUnit, onClick: () -> Unit, t
                     listOfNotNull(duration, "${workout.exerciseCount} exercises", "${workout.setCount} sets", Calc.formatVolume(workout.volumeKg, unit)).joinToString(" · "),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1
+                    maxLines = 1, overflow = TextOverflow.Ellipsis
                 )
             }
             if (trailing != null) trailing() else Spacer(Modifier.size(10.dp))

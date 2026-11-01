@@ -125,7 +125,7 @@ fun ExerciseDetailScreen(exerciseId: String, onBack: () -> Unit, onEdit: () -> U
                 title = {
                     Column {
                         Text(ex?.name ?: "", maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        if (ex != null) Text("${ex.equipment.label} · ${ex.muscleGroup.label}", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        if (ex != null) Text("${ex.equipment.label} · ${ex.muscleGroup.label}", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 },
                 actions = { IconButton(onClick = onEdit) { Icon(Icons.Outlined.Edit, contentDescription = "Edit exercise") } }
@@ -138,9 +138,9 @@ fun ExerciseDetailScreen(exerciseId: String, onBack: () -> Unit, onEdit: () -> U
         ) {
             item {
                 Column(Modifier.padding(horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        StatTile("Best weight", if (state.bestWeightKg > 0) Calc.formatWeight(state.bestWeightKg, unit) else "—", Modifier.weight(1f), sub = if (state.bestWeightReps > 0) "× ${state.bestWeightReps} reps" else null, accent = MaterialTheme.colorScheme.primary)
-                        StatTile("Est. 1RM", if (state.best1RmKg > 0) Calc.formatWeight(state.best1RmKg, unit) else "—", Modifier.weight(1f), sub = "Epley formula")
+                    Row(Modifier.height(androidx.compose.foundation.layout.IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        StatTile("Best weight", if (state.bestWeightKg > 0) Calc.formatWeight(state.bestWeightKg, unit, withUnit = false) else "—", Modifier.weight(1f), sub = if (state.bestWeightReps > 0) "${unit.label} × ${state.bestWeightReps} reps" else unit.label, accent = MaterialTheme.colorScheme.primary)
+                        StatTile("Est. 1RM", if (state.best1RmKg > 0) Calc.formatWeight(state.best1RmKg, unit, withUnit = false) else "—", Modifier.weight(1f), sub = "${unit.label} · Epley")
                     }
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         StatTile("Sessions", state.sessions.size.toString(), Modifier.weight(1f))
@@ -214,7 +214,7 @@ fun ExerciseDetailScreen(exerciseId: String, onBack: () -> Unit, onEdit: () -> U
                                 overflow = TextOverflow.Ellipsis
                             )
                         }
-                        Text(Calc.formatVolume(s.volumeKg, unit), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(Calc.formatVolume(s.volumeKg, unit), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, softWrap = false, modifier = Modifier.padding(start = 8.dp))
                     }
                 }
             }

@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -269,7 +270,7 @@ fun ActiveWorkoutScreen(
             title = { Text("Finish workout?") },
             text = {
                 Column {
-                    Text("${Calc.formatDurationShort(System.currentTimeMillis() - workout.workout.startedAt)} · ${workout.totalSets} sets · ${Calc.formatVolume(workout.totalVolumeKg, unit)}")
+                    Text("${Calc.formatDurationShort(System.currentTimeMillis() - workout.workout.startedAt)} · ${workout.totalSets} sets · ${Calc.formatVolume(workout.totalVolumeKg, unit)}", style = MaterialTheme.typography.bodyMedium)
                     val prs = state.exercises.sumOf { it.prSetIds.size }
                     if (prs > 0) {
                         Spacer(Modifier.height(6.dp))
@@ -315,7 +316,7 @@ private fun ElapsedText(startedAt: Long) {
 }
 
 @Composable
-private fun RestTimerBar(remaining: Int, total: Int, onAdd: () -> Unit, onSkip: () -> Unit) {
+internal fun RestTimerBar(remaining: Int, total: Int, onAdd: () -> Unit, onSkip: () -> Unit) {
     Surface(color = MaterialTheme.colorScheme.surfaceContainerHigh, tonalElevation = 3.dp) {
         Column(Modifier.padding(bottom = 8.dp)) {
             LinearProgressIndicator(
@@ -343,7 +344,7 @@ private fun RestTimerBar(remaining: Int, total: Int, onAdd: () -> Unit, onSkip: 
 }
 
 @Composable
-private fun ExerciseCard(
+internal fun ExerciseCard(
     ui: ExerciseUi,
     settings: Settings,
     index: Int,
@@ -373,7 +374,7 @@ private fun ExerciseCard(
         Column(Modifier.padding(start = 18.dp, end = 8.dp, top = 12.dp, bottom = 16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f).clickable(onClick = onOpenHistory)) {
-                    Text(exercise.name, style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(exercise.name, style = MaterialTheme.typography.titleLarge, maxLines = 2, overflow = TextOverflow.Ellipsis)
                     Text(
                         "${exercise.equipment.label} · ${exercise.muscleGroup.label}",
                         style = MaterialTheme.typography.bodySmall,
@@ -423,13 +424,13 @@ private fun ExerciseCard(
 
             Row(Modifier.padding(end = 10.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Stepper(
-                    label = if (exercise.equipment.perHand) "Weight · per hand" else if (exercise.equipment == com.reps.app.data.model.Equipment.BODYWEIGHT) "Added weight" else "Weight",
+                    label = if (exercise.equipment.perHand) "Per hand" else if (exercise.equipment == com.reps.app.data.model.Equipment.BODYWEIGHT) "Added" else "Weight",
                     value = Calc.formatWeight(ui.pending.weightKg, unit, withUnit = false),
                     unit = unit.label,
                     onDecrement = { onStepWeight(-1) },
                     onIncrement = { onStepWeight(1) },
                     onTapValue = onTapWeight,
-                    modifier = Modifier.weight(1.3f),
+                    modifier = Modifier.weight(1.25f),
                     decrementEnabled = ui.pending.weightKg > (bar ?: 0.0) + 0.0001
                 )
                 Stepper(
@@ -444,9 +445,9 @@ private fun ExerciseCard(
             }
             if (bar != null) {
                 Spacer(Modifier.height(6.dp))
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 4.dp)) {
-                    Text("Bar ${Calc.formatWeight(bar, unit)}  ·  ", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    PlateBreakdown(totalKg = ui.pending.weightKg, barKg = bar, unit = unit, compact = true)
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 4.dp, end = 10.dp)) {
+                    Text("Bar ${Calc.formatWeight(bar, unit)}  ·  ", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    PlateBreakdown(totalKg = ui.pending.weightKg, barKg = bar, unit = unit, compact = true, modifier = Modifier.weight(1f, fill = false))
                 }
             }
             Spacer(Modifier.height(12.dp))
@@ -464,7 +465,7 @@ private fun ExerciseCard(
                 ) {
                     Icon(Icons.Default.Check, contentDescription = null)
                     Spacer(Modifier.width(8.dp))
-                    Text("Log set", style = MaterialTheme.typography.titleMedium)
+                    Text("Log set", style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis, softWrap = false)
                 }
             }
         }
@@ -478,7 +479,8 @@ fun SetRow(label: String, set: SetEntity, unit: com.reps.app.data.model.WeightUn
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
-            .padding(vertical = 6.dp, horizontal = 4.dp),
+            .heightIn(min = 44.dp)
+            .padding(vertical = 4.dp, horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(

@@ -143,9 +143,10 @@ fun SettingsScreen(onBack: () -> Unit, onOpenSync: () -> Unit) {
             }
 
             Group("Lifting") {
-                Row(Modifier.padding(horizontal = 18.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f)) { Text("Units", style = MaterialTheme.typography.bodyLarge) }
-                    SingleChoiceSegmentedButtonRow {
+                Column(Modifier.padding(horizontal = 18.dp, vertical = 12.dp)) {
+                    Text("Units", style = MaterialTheme.typography.bodyLarge)
+                    Spacer(Modifier.height(8.dp))
+                    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
                         WeightUnit.values().forEachIndexed { i, u ->
                             SegmentedButton(
                                 selected = unit == u,
@@ -174,9 +175,10 @@ fun SettingsScreen(onBack: () -> Unit, onOpenSync: () -> Unit) {
             }
 
             Group("Appearance") {
-                Row(Modifier.padding(horizontal = 18.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Text("Theme", style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
-                    SingleChoiceSegmentedButtonRow {
+                Column(Modifier.padding(horizontal = 18.dp, vertical = 12.dp)) {
+                    Text("Theme", style = MaterialTheme.typography.bodyLarge)
+                    Spacer(Modifier.height(8.dp))
+                    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
                         ThemeMode.values().forEachIndexed { i, m ->
                             SegmentedButton(
                                 selected = settings.theme == m,

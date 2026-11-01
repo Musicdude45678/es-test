@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -153,10 +154,10 @@ fun WorkoutDetailScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(Modifier.height(12.dp))
-                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        StatTile("Duration", duration?.let { Calc.formatDurationShort(it) } ?: "—", Modifier.weight(1f))
-                        StatTile("Sets", workout.totalSets.toString(), Modifier.weight(1f))
-                        StatTile("Volume", Calc.formatVolume(workout.totalVolumeKg, unit), Modifier.weight(1f))
+                    Row(Modifier.height(androidx.compose.foundation.layout.IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        StatTile("Duration", duration?.let { Calc.formatDurationShort(it) } ?: "—", Modifier.weight(1f).fillMaxHeight())
+                        StatTile("Sets", workout.totalSets.toString(), Modifier.weight(1f).fillMaxHeight())
+                        StatTile("Volume", Calc.formatVolume(workout.totalVolumeKg, unit, withUnit = false), Modifier.weight(1f).fillMaxHeight(), sub = unit.label)
                     }
                     if (state.prSetIds.isNotEmpty()) {
                         Spacer(Modifier.height(10.dp))
@@ -173,11 +174,11 @@ fun WorkoutDetailScreen(
                     Column(Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
                         Row(Modifier.clickable { onOpenExercise(item.exercise.id) }, verticalAlignment = Alignment.CenterVertically) {
                             Column(Modifier.weight(1f)) {
-                                Text(item.exercise.name, style = MaterialTheme.typography.titleMedium)
-                                Text("${item.exercise.equipment.label} · ${item.exercise.muscleGroup.label}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text(item.exercise.name, style = MaterialTheme.typography.titleMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                                Text("${item.exercise.equipment.label} · ${item.exercise.muscleGroup.label}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
                             }
                             val vol = item.sets.filter { !it.isWarmup }.sumOf { it.weightKg * it.reps }
-                            Text(Calc.formatVolume(vol, unit), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(Calc.formatVolume(vol, unit), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, softWrap = false, modifier = Modifier.padding(start = 8.dp))
                         }
                         Spacer(Modifier.height(8.dp))
                         if (item.sets.isEmpty()) {
