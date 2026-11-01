@@ -99,6 +99,16 @@ cd server && npm install && npm test && npm start
 
 GitHub Actions builds and uploads the APK on every push that touches the app, and publishes it as the `latest` release when pushed to `main`.
 
+### UI preview screenshots
+
+The gym-facing components (steppers, exercise card, stat tiles, week card, rest bar) have Compose
+previews under `app/src/screenshotTest/` rendered at 360dp, also at font scale 1.3, so layout
+regressions such as a wrapped number show up without a phone:
+
+```bash
+./gradlew :app:updateDebugScreenshotTest   # renders to app/build/outputs/screenshotTest-results/preview/debug/rendered/
+```
+
 ### Signing
 
 The release key is **not** in the repo; it was handed to you separately (`reps-release.jks` + `keystore.properties`). Add it before you install for the first time, so every later build installs as an update:
